@@ -1,28 +1,50 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Challenge/>
+    <Modal/>
+    <AddPoints/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Challenge from './components/Challenge.vue'
+import Modal from './components/Modal.vue'
+import AddPoints from './components/AddPoints.vue'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  components:{
+    Challenge,
+    Modal,
+    AddPoints
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*{margin: 0;padding: 0;box-sizing: border-box; font-family: 'Open Sans', sans-serif;}
+.flex{
+  display:flex;
+  align-items: center;
+}
+.relative{
+  position:relative;
+}
+.absolute{
+  position:absolute;
+}
+.max-width{
+  position:relative;
+  left:50%;
+  transform:translateX(-50%);
+  max-width:65rem;
+}
+ul{
+  list-style-type: none;
+}
+a{
+  text-decoration: none;
+}
+.open{
+  display:block !important;
 }
 </style>
