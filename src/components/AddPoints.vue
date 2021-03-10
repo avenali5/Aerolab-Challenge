@@ -35,12 +35,15 @@ export default {
             let loader = document.querySelector('.loader')
             let cardMsg = document.querySelector('.whole-pointAdder-container .card .message')
 
+            //request to add points, the parameter sets how many.
             request.open('POST', 'https://coding-challenge-api.aerolab.co/user/points');
 
             request.setRequestHeader('Content-Type', 'application/json');
             request.setRequestHeader('Accept', 'application/json');
             request.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDQyYjI2NjdlNzE4NzAwMjBlMzhmNDUiLCJpYXQiOjE2MTQ5ODM3ODJ9.B9YJoKCfxOiZt8PnCpMJVRG3bwB-uoWVZRKUrM0DV5U');
 
+            //this is a tomeout to make a little
+            //animation to introduce a loader with a transition.
             setTimeout(function(){
                 option1.style.transform = 'translateY(3rem)'
                 option3.style.transform = 'translateY(-3rem)'
@@ -50,7 +53,7 @@ export default {
                 loader.style.opacity = '1'
             }, 500)
 
-
+            //once the api loads, goodbye to loader
             request.onreadystatechange = function () {
             if (this.readyState === 4) {
                 console.log('Status:', this.status);
@@ -59,9 +62,11 @@ export default {
                 loader.style.opacity = '0'
                 buttons.style.display = 'none'
 
+                //if api loads correctly, show this
                 if(this.status >= 100 && this.status <= 299){
                     cardMsg.innerHTML = 'Points added successfully!'
                 }
+                //if not, show this
                 if(this.status >= 400 && this.status < 600 ){
                     cardMsg.innerHTML = 'Agh, we got a problem, try again later please'
                 }
@@ -77,6 +82,7 @@ export default {
             request.send(JSON.stringify(body));
         },
         closeModal(){
+            //close modal when pressing the X
             let modal = document.querySelector('.whole-pointAdder-container')
             modal.style.display = 'none'
         }

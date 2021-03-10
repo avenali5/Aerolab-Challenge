@@ -8,7 +8,7 @@
         </div>
         <div class="info-container flex">
           <span class="userName">{{ this.userName }}</span>
-          <div class="userPoints flex" :key="this.userPoints">
+          <div class="userPoints flex" :key="userPoints">
             <span>{{ this.userPoints }}</span>
             <img src="../assets/icons/coin.svg" alt="coin">
           </div>
@@ -22,7 +22,6 @@
       </section>
     </header>
 
-    <!--header-->
     <main>
       <!--banner-->
       <section class="banner-container">
@@ -33,6 +32,7 @@
 
       <!--cards-->
       <section class="cards-container max-width">
+        <!--panel to access number of products, toggle sorting, and change pages-->
         <div class="panel-container flex">
           <div class="products-shown">
             <h4>{{ this.currentN }} of {{ this.nOfProducts }} products</h4>
@@ -55,6 +55,7 @@
           </div>
         </div>
         <hr class="separator max-width">
+        <!--actual part of the cards-->
         <div class="products-catalog flex">
           <div class="product-card relative" v-for="(card, index) in cards" :key="index">
             <div class="neededCoins absolute" v-show="userPoints < card.cost">
@@ -74,6 +75,7 @@
           </div>
         </div>
         <hr class="separator">
+        <!--bottom part to access products shown and change pages-->
         <div class="bottom-panel flex">
           <div class="products-shown">
             <h4>{{ this.currentN }} of {{ this.nOfProducts }} products</h4>
@@ -104,10 +106,12 @@ export default {
   },
    methods:{
     toggleMenu(){
+      //toggle little kebab menu
       let menu = document.querySelector('.menu')
       menu.classList.toggle('open')
     },
     getInfo() {
+      //axios call to get user info and display it in HEADER
       axios
       .get('https://coding-challenge-api.aerolab.co/user/me', {
         headers: {
@@ -133,6 +137,8 @@ export default {
       })
       .then(response => {
         let data = response.data
+
+        //handle array to divide it in parts and make pagination.
         let page = currentPage || 1,
         per_page = itemsPerPage || 10,
         offset = (page - 1) * per_page,
@@ -146,7 +152,7 @@ export default {
         this.currentN = itemsShown
         this.cards = paginatedItems
 
-        
+        //check if the user had one filter active, and keep it when changing pages
         if(highSorter.checked === true){
          this.cards.sort((a, b) => (a.cost < b.cost) ? 1 : -1)
         } else if(lowSorter.checked === true){
@@ -160,12 +166,14 @@ export default {
       })
     },
     showPointsAdder(e){
+      // handle ul item to show little modal menu to add points to user
       e.preventDefault();
       
       let pointsAdder = document.querySelector('.whole-pointAdder-container')
       pointsAdder.style.display = 'block'
     },
     redeemItem(ID){
+      //process of buying an item.
       var request = new XMLHttpRequest();
       let modal = document.querySelector('.whole-modal-container')
       let modalImg = document.querySelector('.whole-modal-container .card img')
@@ -173,6 +181,7 @@ export default {
       let modalMsg = document.querySelector('.whole-modal-container .card .message')
       let modalBtn = document.querySelector('.whole-modal-container .card a')
 
+      //request made
       request.open('POST', 'https://coding-challenge-api.aerolab.co/redeem');
 
       request.setRequestHeader('Content-Type', 'application/json');
@@ -185,6 +194,7 @@ export default {
           console.log('Headers:', this.getAllResponseHeaders());
           console.log('Body:', this.responseText);
 
+          //if successull, show this
           if(this.status >= 100 && this.status <= 299){
             modal.style.display = 'block'
             modalImg.src = require('../assets/icons/happyFace.svg')
@@ -192,6 +202,7 @@ export default {
             modalMsg.innerHTML = "You've successfully redeemed this item"
             modalBtn.innerHTML = "Yay! Let's keep shopping"
           }
+          //if not, show this
           if(this.status >= 400 && this.status < 600 ){
             modal.style.display = 'block'
             modalImg.src = require('../assets/icons/sadFace.svg')
@@ -209,21 +220,24 @@ export default {
       request.send(JSON.stringify(body));
     },
     sortLow(){
+      //little algorithm to sort by cheapest first
       let cards = this.cards
       cards.sort((a, b) => (a.cost > b.cost) ? 1 : -1)
     },
     sortHigh(){
+      //little algorithm to sort by more expensive first
       let cards = this.cards
       cards.sort((a, b) => (a.cost < b.cost) ? 1 : -1)
     },
     sortNew(){
       /*as there is no date for each product, but the 'most recent' button
-      should do something, I choose to sort randomly the array to mock the function*/
+      should do something, I choose to sort randomly the array to mock the function, just for fun*/
       let array = this.cards
       array.sort(() => Math.random() - 0.5);
     },
   },
   mounted(){
+    //call these two as soon as page loads.
     this.getInfo()
     this.getListOfProducts(1, 16, 16)
   }
